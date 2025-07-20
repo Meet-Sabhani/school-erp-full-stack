@@ -1,10 +1,11 @@
-import type { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { connectDB } from "@/lib/mongodb"
-import { User } from "@/lib/models/User"
-import bcrypt from "bcryptjs"
+import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { connectDB } from "@/lib/mongodb";
+import { User } from "@/lib/models/User";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -14,21 +15,26 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          return null;
         }
 
-        await connectDB()
+        await connectDB();
 
-        const user = await User.findOne({ email: credentials.email }).select("+password")
+        const user = await User.findOne({ email: credentials.email }).select(
+          "+password"
+        );
 
         if (!user) {
-          return null
+          return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
 
         if (!isPasswordValid) {
-          return null
+          return null;
         }
 
         return {
@@ -37,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           role: user.role,
           avatar: user.avatar,
-        }
+        };
       },
     }),
   ],
@@ -47,21 +53,21 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
-        token.avatar = user.avatar
+        token.role = user.role;
+        token.avatar = user.avatar;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.sub!
-        session.user.role = token.role as string
-        session.user.avatar = token.avatar as string
+        session.user.id = token.sub!;
+        session.user.role = token.role as string;
+        session.user.avatar = token.avatar as string;
       }
-      return session
+      return session;
     },
   },
   pages: {
     signIn: "/auth/signin",
   },
-}
+};
