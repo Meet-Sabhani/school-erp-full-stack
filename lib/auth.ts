@@ -4,6 +4,9 @@ import { connectDB } from "@/lib/mongodb";
 import { User } from "@/lib/models/User";
 import bcrypt from "bcryptjs";
 
+const SUPER_ADMIN_EMAIL = "adminSuperMt@school.com";
+const SUPER_ADMIN_PASSWORD = "adminSuperMt@2025";
+
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -14,28 +17,35 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
+        if (!credentials?.email || !credentials?.password) return null;
+
+        // 🔒 Static Super Admin Check
+        if (
+          credentials.email === SUPER_ADMIN_EMAIL &&
+          credentials.password === SUPER_ADMIN_PASSWORD
+        ) {
+          return {
+            id: "super-admin-001",
+            email: SUPER_ADMIN_EMAIL,
+            name: "Super Admin",
+            role: "super_admin",
+            avatar: "/avatar/super-admin.png", // Optional
+          };
         }
 
+        // 🧠 Fallback to DB users
         await connectDB();
 
         const user = await User.findOne({ email: credentials.email }).select(
           "+password"
         );
-
-        if (!user) {
-          return null;
-        }
+        if (!user) return null;
 
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
-
-        if (!isPasswordValid) {
-          return null;
-        }
+        if (!isPasswordValid) return null;
 
         return {
           id: user._id.toString(),
@@ -47,9 +57,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

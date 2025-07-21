@@ -163,7 +163,7 @@ export default function SignInPage() {
               </Button>
             </form>
 
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <div className="text-center">
                 <p className="text-sm text-gray-600">Demo Credentials:</p>
                 <div className="mt-2 text-xs text-gray-500 space-y-1">
@@ -172,7 +172,7 @@ export default function SignInPage() {
                   <p>Parent: parent@school.com / password123</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
