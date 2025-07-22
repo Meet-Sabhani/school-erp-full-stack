@@ -1,7 +1,11 @@
-import React from "react";
+import SchoolsPage from "@/components/schools/SchoolsPage";
 
 const Schools = () => {
-  return <div>Schools</div>;
+  return (
+    <>
+      <SchoolsPage />
+    </>
+  );
 };
 
 export default Schools;

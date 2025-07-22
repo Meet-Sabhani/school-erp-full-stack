@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, GraduationCap, DollarSign, TrendingUp } from "lucide-react"
-import { StatsCard } from "@/components/dashboard/stats-card"
-import { RecentActivity } from "@/components/dashboard/recent-activity"
-import { AnalyticsChart } from "@/components/dashboard/analytics-chart"
+import { useQuery } from "@tanstack/react-query";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Users, GraduationCap, DollarSign, TrendingUp } from "lucide-react";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { RecentActivity } from "@/components/dashboard/recent-activity";
+import { AnalyticsChart } from "@/components/dashboard/analytics-chart";
 
 export default function SuperAdminDashboard() {
   const { data: stats, isLoading } = useQuery({
@@ -17,19 +23,23 @@ export default function SuperAdminDashboard() {
         totalStudents: 850,
         totalRevenue: 125000,
         growthRate: 12.5,
-      }
+      };
     },
-  })
+  });
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
-        <p className="text-muted-foreground">Overview of all schools and system-wide metrics</p>
+        <h1 className="text-3xl font-bold tracking-tight">
+          Super Admin Dashboard
+        </h1>
+        <p className="text-muted-foreground">
+          Overview of all schools and system-wide metrics
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -72,7 +82,9 @@ export default function SuperAdminDashboard() {
         <Card className="col-span-3">
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest system activities and updates</CardDescription>
+            <CardDescription>
+              Latest system activities and updates
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <RecentActivity />
@@ -80,5 +92,5 @@ export default function SuperAdminDashboard() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
